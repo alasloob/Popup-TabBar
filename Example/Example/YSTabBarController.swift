@@ -31,6 +31,7 @@ class YSTabBarController: UITabBarController {
     fileprivate var marginTop:CGFloat = 0
     fileprivate let btnWidthAndHeight:CGFloat = 35.0
     fileprivate var tabBarBackgroundImage = [UIImageView]()
+    fileprivate var fixMargin:CGFloat = 20
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -131,11 +132,16 @@ class YSTabBarController: UITabBarController {
             self.currentViewIndex = Int(posX)
             let x = (position.size.width * CGFloat(posX)) - (position.size.width / 2)
             self.device()
-            self.stackViewButtons.frame = CGRect(x: CGFloat(x) - 20,
-                                                 y: self.screenHeight - (height + marginBottom) ,
+            self.stackViewButtons.frame = CGRect(x: CGFloat(x) - self.fixMargin,
+                                                 y: self.screenHeight + height + self.fixMargin,
                                                  width: 35.0,
                                                  height: height)
-            UIView.animate(withDuration: 0.1) {
+            UIView.animate(withDuration: 0.5) {
+                self.stackViewButtons.frame = CGRect(x: CGFloat(x) - self.fixMargin,
+                                                     y: self.screenHeight - (height + self.marginBottom) ,
+                                                     width: 35.0,
+                                                     height: height)
+
                 self.stackViewButtons.subviews.forEach {
                     $0.isHidden = false
                 }
@@ -249,8 +255,13 @@ class YSTabBarController: UITabBarController {
     fileprivate func finsih() {
         if self.isPopOpen == true {
             
-            UIView.animate(withDuration: 0.1, animations: {
+            UIView.animate(withDuration: 0.5, animations: {
                 self.isPopOpen = false
+                let frame = self.stackViewButtons.frame
+                self.stackViewButtons.frame = CGRect(x: frame.origin.x,
+                                                     y: frame.origin.y + frame.size.height + self.fixMargin,
+                                                     width: 35.0,
+                                                     height: frame.size.height)
                 self.stackViewButtons.subviews.forEach {
                     $0.isHidden = true
                 }
