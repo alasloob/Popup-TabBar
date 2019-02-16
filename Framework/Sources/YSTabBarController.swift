@@ -27,8 +27,10 @@ class YSTabBarController: UITabBarController {
     fileprivate var screenWidth  = UIScreen.main.bounds.width
     fileprivate var isUseStoryboard = true
     fileprivate var marginBottom:CGFloat = 60.0
+    fileprivate var marginLeft:CGFloat = 0
+    fileprivate var marginTop:CGFloat = 0
     fileprivate let btnWidthAndHeight:CGFloat = 35.0
-    
+    fileprivate var tabBarBackgroundImage = [UIImageView]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -40,6 +42,7 @@ class YSTabBarController: UITabBarController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        self.device()
         self.setup()
     }
     
@@ -47,10 +50,24 @@ class YSTabBarController: UITabBarController {
         self.finsih()
         self.screenWidth = size.width
         self.screenHeight = size.height
+        self.device()
+        for v in self.tabBarBackgroundImage {
+            v.frame = CGRect(origin: CGPoint(x: self.marginLeft, y: self.marginTop),
+                             size: v.frame.size)
+        }
     }
     
     fileprivate func isLanlandscape() -> Bool {
-        return self.preferredInterfaceOrientationForPresentation.isLandscape
+        switch UIDevice.current.orientation {
+        case .landscapeLeft:
+            return true
+        case .landscapeRight:
+            return true
+        case .unknown:
+            return UIApplication.shared.statusBarOrientation.isLandscape
+        default:
+            return false
+        }
     }
     
     fileprivate func setup() {
@@ -79,9 +96,9 @@ class YSTabBarController: UITabBarController {
             }
         } else {
             if let lc = self.viewControllers {
-                if lc.count > 3 {
+                if lc.count > 4 {
                     for (index, elemnet) in lc.enumerated() {
-                        if index > 3 {
+                        if index > 4 {
                             self.controllers.append(elemnet)
                         }
                     }
@@ -129,11 +146,21 @@ class YSTabBarController: UITabBarController {
     
     //
     fileprivate func device() {
-        let deviceName = UIDevice.current.name
-        switch deviceName {
-        case "iPhone SE":
+        switch isLanlandscape() ? self.screenWidth : self.screenHeight {
+        case 568:
             self.marginBottom = (isLanlandscape() == true) ? 35 : 55
+            self.marginLeft = -8
+            self.marginTop = (isLanlandscape() == true) ? -8 : 0
+        case 667:
+            self.marginBottom = (isLanlandscape() == true) ? 35 : 55
+            self.marginTop = (isLanlandscape() == true) ? -8 : 0
+        case 736:
+            self.marginBottom = 55
+        case 896:
+            self.marginBottom = (isLanlandscape() == true) ? 75 : 90
+            self.marginLeft = (isLanlandscape() == true) ?  10 : 0
         default:
+            self.marginTop = (isLanlandscape() == true) ? -8 : 0
             self.marginBottom = (isLanlandscape() == true) ? 60 : 90
         }
     }
@@ -175,6 +202,9 @@ class YSTabBarController: UITabBarController {
         let pointerImageView: UIImageView = UIImageView(image: #imageLiteral(resourceName: "tabBarBackgound"))
         pointerImageView.tag = 1
         v.insertSubview(pointerImageView, at: 0)
+        self.tabBarBackgroundImage.append(pointerImageView)
+        pointerImageView.frame = CGRect(origin: CGPoint(x: self.marginLeft, y: self.marginTop),
+                                        size: pointerImageView.frame.size)
     }
     
     @objc fileprivate func relpaceTabBar(sender: UIButton) {
@@ -193,12 +223,11 @@ class YSTabBarController: UITabBarController {
         self.controllers.remove(at: sender.tag)
         self.controllers.insert(currentTopBar, at: sender.tag)
         
+        self.tabBarBackgroundImage.removeAll()
+        
         self.setViewControllers(vc, animated: false)
         self.selectedViewController = replaceTopBar
         
-        if let tbar = self.tabBar.subviews.last {
-            self.addLongPressGestureRecognizer(v: tbar)
-        }
         self.saveOrderTabBar()
         self.finsih()
     }
@@ -247,5 +276,6 @@ class YSTabBarController: UITabBarController {
     
     
 }
+
 
 
