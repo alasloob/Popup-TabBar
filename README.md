@@ -6,7 +6,7 @@
 
 - you can use this with storyboard and coding
 
-- if you want use with storybaord only put replace UITabBarController to YSTabBarController 
+- if you want use with storybaord only replace UITabBarController to YSTabBarController 
 
 [![Demo CountPages alpha](ScreenRecording.gif)]
 
