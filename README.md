@@ -8,7 +8,7 @@
 
 - if you want use with storybaord only replace UITabBarController to YSTabBarController 
 
-[(ScreenRecording.gif)]
+![Demo CountPages alpha](ScreenRecording.gif)
 
 
 ### Twitter [@arabphones](https://twitter.com/arabphones)
